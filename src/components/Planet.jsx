@@ -1,4 +1,10 @@
-function Planet({ planet, onSelectPlanet }) {
+function Planet({ planet, onSelectPlanet, isDragging }) {
+  function handleClick(event) {
+    event.stopPropagation()
+    if (isDragging) return
+    onSelectPlanet(planet)
+  }
+
   return (
     <div
       className="orbit"
@@ -11,10 +17,7 @@ function Planet({ planet, onSelectPlanet }) {
       <button
         type="button"
         className={`planet-button ${planet.rings ? 'saturn' : ''}`}
-        onClick={event => {
-          event.stopPropagation()
-          onSelectPlanet(planet)
-        }}
+        onClick={handleClick}
         style={{
           width: `${planet.size}px`,
           height: `${planet.size}px`,
