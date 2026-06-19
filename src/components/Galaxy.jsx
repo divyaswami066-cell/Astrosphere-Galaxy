@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import Planet from './Planet'
 import Stars from './Stars'
 
@@ -132,6 +132,17 @@ function Galaxy({ planets, onSelectPlanet, onCreatePlanet, currentFact, onNextFa
     dragStartRef.current = { x: event.clientX, y: event.clientY }
   }
 
+  function handleWheel(event) {
+    if (dragging) return
+    event.preventDefault()
+    const next = {
+      x: clamp(sceneOffsetRef.current.x + event.deltaX * 0.8, -DRAG_LIMIT.x, DRAG_LIMIT.x),
+      y: clamp(sceneOffsetRef.current.y + event.deltaY * 0.8, -DRAG_LIMIT.y, DRAG_LIMIT.y),
+    }
+    updateSceneOffset(next)
+    setShowHint(false)
+  }
+
   function finishDrag(event) {
     if (!dragging || event.pointerId !== pointerIdRef.current) return
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
@@ -160,10 +171,11 @@ function Galaxy({ planets, onSelectPlanet, onCreatePlanet, currentFact, onNextFa
       onPointerUp={finishDrag}
       onPointerCancel={finishDrag}
       onPointerLeave={finishDrag}
+      onWheel={handleWheel}
     >
       <Stars count={110} parallax={parallax} />
       <div className="shooting-list">
-        {shootingStars.map(star => (
+        {shootingStars.map((star) => (
           <span
             key={star.id}
             className="shooting-star"
@@ -184,7 +196,7 @@ function Galaxy({ planets, onSelectPlanet, onCreatePlanet, currentFact, onNextFa
         <div className="sun-glow" />
         <div className="sun-core" />
 
-        {planets.map(planet => (
+        {planets.map((planet) => (
           <Planet
             key={`${planet.name}-${planet.distance}`}
             planet={planet}
@@ -215,7 +227,7 @@ function Galaxy({ planets, onSelectPlanet, onCreatePlanet, currentFact, onNextFa
               <input
                 type="text"
                 value={form.name}
-                onChange={event => setForm(prev => ({ ...prev, name: event.target.value }))}
+                onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
                 placeholder="My Planet"
               />
             </label>
@@ -224,7 +236,7 @@ function Galaxy({ planets, onSelectPlanet, onCreatePlanet, currentFact, onNextFa
               <input
                 type="color"
                 value={form.color}
-                onChange={event => setForm(prev => ({ ...prev, color: event.target.value }))}
+                onChange={(event) => setForm((prev) => ({ ...prev, color: event.target.value }))}
               />
             </label>
             <label>
@@ -234,7 +246,7 @@ function Galaxy({ planets, onSelectPlanet, onCreatePlanet, currentFact, onNextFa
                 min="2000"
                 max="70000"
                 value={form.size}
-                onChange={event => setForm(prev => ({ ...prev, size: Number(event.target.value) }))}
+                onChange={(event) => setForm((prev) => ({ ...prev, size: Number(event.target.value) }))}
               />
             </label>
             <button className="submit-planet" type="submit">

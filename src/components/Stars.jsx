@@ -1,15 +1,20 @@
 import { useMemo } from 'react'
 
-function Stars({ count = 80, parallax = false }) {
+function seededRandom(seed) {
+  const x = Math.sin(seed * 12.9898) * 43758.5453
+  return x - Math.floor(x)
+}
+
+function Stars({ count = 130, parallax = false }) {
   const stars = useMemo(
     () =>
       Array.from({ length: count }, (_, index) => ({
         id: index,
-        top: Math.random() * 100,
-        left: Math.random() * 100,
-        size: Math.random() * 2 + 1,
-        duration: Math.random() * 5 + 3,
-        delay: Math.random() * 5,
+        top: seededRandom(index * 1.1) * 100,
+        left: seededRandom(index * 2.3) * 100,
+        size: seededRandom(index * 3.7) * 2 + 1,
+        duration: seededRandom(index * 4.9) * 5 + 3,
+        delay: seededRandom(index * 5.6) * 5,
       })),
     [count],
   )

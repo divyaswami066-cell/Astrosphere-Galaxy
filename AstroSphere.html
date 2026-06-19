@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstroSphere - Interactive Solar System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        /* BACKGROUND */
+        body {
+            background: radial-gradient(ellipse at 20% 80%, rgba(168, 85, 247, 0.15) 0%, rgba(30, 20, 60, 0.3) 25%, rgba(15, 10, 40, 1) 100%);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0a28 0%, #1a1038 50%, #0d0620 100%);
+            z-index: 0;
+        }
+
+        /* STARFIELD */
+        .starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            width: 1.5px;
+            height: 1.5px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: twinkle 3s infinite;
+        }
+
+        .star.blue {
+            background: #22d3ee;
+            box-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* NEBULA LAYER */
+        .nebula {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at 15% 70%, rgba(168, 85, 247, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 2;
+            filter: blur(80px);
+            animation: driftNebula 20s ease-in-out infinite;
+        }
+
+        @keyframes driftNebula {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, 20px); }
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+        }
+
+        /* HEADER / LOGO */
+        .header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 50;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #a855f7;
+            position: relative;
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: #a855f7;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(168, 85, 247, 0.8);
+        }
+
+        .logo-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 26px;
+            height: 14px;
+            border: 1px solid #22d3ee;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) rotateX(75deg);
+            opacity: 0.7;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #a855f7, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+            letter-spacing: 2px;
+        }
+
+        /* SOLAR SYSTEM */
+        .solar-system {
+            position: relative;
+            width: 1000px;
+            height: 1000px;
+        }
+
+        /* SUN */
+        .sun {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle at 35% 35%, #ffd700, #ff9500);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 40px rgba(255, 215, 0, 0.8),
+                0 0 80px rgba(255, 165, 0, 0.5),
+                inset -10px -10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            animation: sunPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes sunPulse {
+            0%, 100% { box-shadow: 
+                0 0 40px rgba(255, 215, 0, 0.8),
+                0 0 80px rgba(255, 165, 0, 0.5),
+                inset -10px -10px 30px rgba(0, 0, 0, 0.3); }
+            50% { box-shadow: 
+                0 0 60px rgba(255, 215, 0, 1),
+                0 0 120px rgba(255, 165, 0, 0.7),
+                inset -10px -10px 30px rgba(0, 0, 0, 0.3); }
+        }
+
+        /* ORBIT PATHS */
+        .orbit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px dashed rgba(34, 211, 238, 0.2);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* PLANET */
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            top: 50%;
+            left: 100%;
+            transform: translateY(-50%);
+        }
+
+        .planet:hover {
+            transform: translateY(-50%) scale(1.15);
+        }
+
+        .planet-label {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: #22d3ee;
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.8);
+            white-space: nowrap;
+            font-weight: bold;
+            letter-spacing: 1px;
+            pointer-events: none;
+            margin-top: 5px;
+        }
+
+        .planet-orbit {
+            animation-name: orbitBase;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes orbitBase {
+            0% { transform: translateY(-50%) rotate(0deg); }
+            100% { transform: translateY(-50%) rotate(360deg); }
+        }
+
+        /* SPECIFIC PLANETS */
+        .mercury {
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle at 30% 30%, #e8e8e8, #8b8b8b);
+            box-shadow: 0 0 15px rgba(232, 232, 232, 0.6);
+        }
+
+        .venus {
+            width: 18px;
+            height: 18px;
+            background: radial-gradient(circle at 35% 35%, #fff8e7, #ffd89b);
+            box-shadow: 0 0 20px rgba(255, 216, 155, 0.7);
+        }
+
+        .earth {
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle at 35% 35%, #4da6ff, #1f5fa8);
+            box-shadow: 0 0 25px rgba(77, 166, 255, 0.7);
+        }
+
+        .earth::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 65% 60%, rgba(76, 175, 80, 0.5), transparent 60%);
+            border-radius: 50%;
+        }
+
+        .mars {
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle at 30% 30%, #ff9944, #c85a1f);
+            box-shadow: 0 0 20px rgba(255, 153, 68, 0.6);
+        }
+
+        .jupiter {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #d4a574 0%, #c87f2f 50%, #a85c3c 100%);
+            box-shadow: 0 0 30px rgba(212, 165, 116, 0.5);
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .jupiter::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 8px;
+            background: rgba(160, 82, 45, 0.6);
+            top: 35%;
+        }
+
+        .saturn {
+            width: 28px;
+            height: 28px;
+            background: radial-gradient(circle at 35% 35%, #f5d547, #d4a851);
+            box-shadow: 0 0 25px rgba(245, 213, 71, 0.5);
+            border-radius: 50%;
+        }
+
+        .saturn-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 48px;
+            height: 24px;
+            border: 2px solid rgba(168, 85, 247, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+        }
+
+        .uranus {
+            width: 22px;
+            height: 22px;
+            background: radial-gradient(circle at 35% 35%, #4fb3e8, #2c7fa3);
+            box-shadow: 0 0 25px rgba(79, 179, 232, 0.6);
+        }
+
+        .neptune {
+            width: 22px;
+            height: 22px;
+            background: radial-gradient(circle at 35% 35%, #4a7bff, #1f3d76);
+            box-shadow: 0 0 25px rgba(74, 123, 255, 0.6);
+        }
+
+        /* CONTROLS */
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            z-index: 50;
+        }
+
+        .btn-add-planet {
+            padding: 12px 24px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 2px solid #a855f7;
+            border-radius: 50px;
+            color: #a855f7;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+        }
+
+        .btn-add-planet:hover {
+            background: rgba(168, 85, 247, 0.2);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+            transform: scale(1.05);
+        }
+
+        /* INFO CARD / MODAL */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(30, 20, 60, 0.6);
+            border: 2px solid #a855f7;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            backdrop-filter: blur(20px);
+            box-shadow: 
+                0 0 40px rgba(168, 85, 247, 0.4),
+                inset 0 0 20px rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            background: none;
+            border: none;
+            color: #a855f7;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+            color: #22d3ee;
+        }
+
+        .modal h2 {
+            color: #a855f7;
+            font-size: 24px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .modal-info-item {
+            color: #e0e0e0;
+            margin-bottom: 12px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .modal-info-label {
+            color: #22d3ee;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .modal-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #a855f7, transparent);
+            margin: 20px 0;
+        }
+
+        .modal-fact {
+            color: #22d3ee;
+            font-size: 12px;
+            font-style: italic;
+            line-height: 1.8;
+            padding: 15px;
+            background: rgba(168, 85, 247, 0.1);
+            border-left: 3px solid #22d3ee;
+            border-radius: 5px;
+        }
+
+        /* ADD PLANET FORM */
+        .form-modal {
+            display: none;
+        }
+
+        .form-modal.active {
+            display: flex;
+        }
+
+        .form-content {
+            background: rgba(30, 20, 60, 0.7);
+            border: 2px solid #22d3ee;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 350px;
+            backdrop-filter: blur(20px);
+            box-shadow: 
+                0 0 40px rgba(34, 211, 238, 0.3),
+                inset 0 0 20px rgba(255, 255, 255, 0.05);
+        }
+
+        .form-content h2 {
+            color: #22d3ee;
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            color: #a855f7;
+            font-size: 12px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid #a855f7;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 13px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            background: rgba(168, 85, 247, 0.15);
+            border-color: #22d3ee;
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(224, 224, 224, 0.4);
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-submit,
+        .btn-cancel {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .btn-submit {
+            background: #a855f7;
+            color: white;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn-submit:hover {
+            background: #c084fc;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+        }
+
+        .btn-cancel {
+            background: rgba(168, 85, 247, 0.1);
+            color: #a855f7;
+            border: 1px solid #a855f7;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(168, 85, 247, 0.2);
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+        }
+
+        /* COLOR PICKER CUSTOM */
+        .color-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .color-input-wrapper input[type="color"] {
+            width: 50px;
+            height: 35px;
+            padding: 2px;
+            cursor: pointer;
+        }
+
+        .color-input-wrapper input[type="text"] {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="starfield" id="starfield"></div>
+    <div class="nebula"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo-icon">
+                <div class="logo-ring"></div>
+            </div>
+            <div class="logo-text">AstroSphere</div>
+        </div>
+
+        <div class="solar-system" id="solarSystem">
+            <div class="sun"></div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-add-planet" id="btnAddPlanet">+ Add Planet</button>
+        </div>
+    </div>
+
+    <!-- INFO MODAL -->
+    <div class="modal" id="infoModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">×</button>
+            <h2 id="modalTitle">Mercury</h2>
+            <div class="modal-info-item">
+                <span class="modal-info-label">Size:</span>
+                <span id="modalSize">4,880 km</span>
+            </div>
+            <div class="modal-info-item">
+                <span class="modal-info-label">Distance:</span>
+                <span id="modalDistance">58 million km</span>
+            </div>
+            <div class="modal-divider"></div>
+            <div class="modal-fact" id="modalFact">Mercury is the fastest planet in our solar system.</div>
+        </div>
+    </div>
+
+    <!-- ADD PLANET FORM MODAL -->
+    <div class="form-modal" id="formModal">
+        <div class="form-content">
+            <button class="modal-close" id="formClose">×</button>
+            <h2>Create Planet</h2>
+            <form id="addPlanetForm">
+                <div class="form-group">
+                    <label for="planetName">Planet Name</label>
+                    <input type="text" id="planetName" placeholder="Enter planet name" required>
+                </div>
+                <div class="form-group">
+                    <label for="planetColor">Color</label>
+                    <div class="color-input-wrapper">
+                        <input type="color" id="planetColor" value="#a855f7">
+                        <input type="text" id="colorHex" value="#a855f7" readonly>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="planetSize">Size (px)</label>
+                    <input type="number" id="planetSize" min="10" max="50" value="20" required>
+                </div>
+                <div class="form-group">
+                    <label for="orbitDistance">Orbit Distance (px)</label>
+                    <input type="number" id="orbitDistance" min="100" max="400" value="250" required>
+                </div>
+                <div class="form-group">
+                    <label for="orbitSpeed">Orbit Speed (seconds)</label>
+                    <input type="number" id="orbitSpeed" min="5" max="60" step="5" value="30" required>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn-submit">Create</button>
+                    <button type="button" class="btn-cancel" id="formCancelBtn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // PLANET DATA
+        const planetsData = [
+            {
+                name: 'Mercury',
+                size: 12,
+                distance: 120,
+                speed: 8.8,
+                color: '#e8e8e8',
+                fact: 'Mercury is the fastest planet in our solar system.',
+                size_label: '4,880 km',
+                distance_label: '58 million km',
+                className: 'mercury'
+            },
+            {
+                name: 'Venus',
+                size: 18,
+                distance: 165,
+                speed: 12.4,
+                color: '#fff8e7',
+                fact: 'Venus spins backward compared to most planets.',
+                size_label: '12,104 km',
+                distance_label: '108 million km',
+                className: 'venus'
+            },
+            {
+                name: 'Earth',
+                size: 20,
+                distance: 210,
+                speed: 16.5,
+                color: '#4da6ff',
+                fact: 'Earth is the only planet known to support life.',
+                size_label: '12,742 km',
+                distance_label: '150 million km',
+                className: 'earth'
+            },
+            {
+                name: 'Mars',
+                size: 16,
+                distance: 255,
+                speed: 20.3,
+                color: '#ff9944',
+                fact: 'Mars has the tallest volcano in the solar system.',
+                size_label: '6,779 km',
+                distance_label: '228 million km',
+                className: 'mars'
+            },
+            {
+                name: 'Jupiter',
+                size: 32,
+                distance: 305,
+                speed: 28.1,
+                color: '#d4a574',
+                fact: 'Jupiter is so large it could fit 1,300 Earths inside.',
+                size_label: '139,820 km',
+                distance_label: '778 million km',
+                className: 'jupiter'
+            },
+            {
+                name: 'Saturn',
+                size: 28,
+                distance: 355,
+                speed: 34.4,
+                color: '#f5d547',
+                fact: 'Saturn appears flat because of its wide rings.',
+                size_label: '116,460 km',
+                distance_label: '1.4 billion km',
+                className: 'saturn',
+                rings: true
+            },
+            {
+                name: 'Uranus',
+                size: 22,
+                distance: 405,
+                speed: 42.0,
+                color: '#4fb3e8',
+                fact: 'Uranus rolls on its side as it travels around the sun.',
+                size_label: '50,724 km',
+                distance_label: '2.9 billion km',
+                className: 'uranus'
+            },
+            {
+                name: 'Neptune',
+                size: 22,
+                distance: 455,
+                speed: 49.2,
+                color: '#4a7bff',
+                fact: 'Neptune has the strongest winds in the solar system.',
+                size_label: '49,244 km',
+                distance_label: '4.5 billion km',
+                className: 'neptune'
+            }
+        ];
+
+        let customPlanets = [];
+        let orbitCounter = 0;
+
+        // STARFIELD GENERATION
+        function generateStarfield() {
+            const starfield = document.getElementById('starfield');
+            const starCount = 200;
+
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star' + (Math.random() > 0.8 ? ' blue' : '');
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starfield.appendChild(star);
+            }
+        }
+
+        // CREATE PLANET ELEMENT
+        function createPlanetElement(planet, isCustom = false) {
+            const orbitContainer = document.createElement('div');
+            orbitContainer.className = 'orbit';
+            orbitContainer.style.width = planet.distance * 2 + 'px';
+            orbitContainer.style.height = planet.distance * 2 + 'px';
+
+            const planetEl = document.createElement('div');
+            planetEl.className = `planet planet-orbit ${planet.className || ''}`;
+            planetEl.style.width = planet.size + 'px';
+            planetEl.style.height = planet.size + 'px';
+            if (!planet.className) {
+                planetEl.style.background = planet.color;
+                planetEl.style.boxShadow = `0 0 ${planet.size}px ${planet.color}`;
+            }
+            planetEl.style.animationDuration = planet.speed + 's';
+
+            // LABEL
+            const label = document.createElement('div');
+            label.className = 'planet-label';
+            label.textContent = planet.name;
+            planetEl.appendChild(label);
+
+            // SATURN RING
+            if (planet.rings) {
+                const ring = document.createElement('div');
+                ring.className = 'saturn-ring';
+                planetEl.appendChild(ring);
+            }
+
+            planetEl.addEventListener('click', () => showPlanetInfo(planet));
+
+            orbitContainer.appendChild(planetEl);
+            return orbitContainer;
+        }
+
+        // SHOW PLANET INFO
+        function showPlanetInfo(planet) {
+            document.getElementById('modalTitle').textContent = planet.name;
+            document.getElementById('modalSize').textContent = planet.size_label;
+            document.getElementById('modalDistance').textContent = planet.distance_label;
+            document.getElementById('modalFact').textContent = planet.fact;
+            document.getElementById('infoModal').classList.add('active');
+        }
+
+        // CLOSE MODAL
+        document.getElementById('modalClose').addEventListener('click', () => {
+            document.getElementById('infoModal').classList.remove('active');
+        });
+
+        document.getElementById('infoModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('infoModal')) {
+                document.getElementById('infoModal').classList.remove('active');
+            }
+        });
+
+        // ADD PLANET BUTTON
+        document.getElementById('btnAddPlanet').addEventListener('click', () => {
+            document.getElementById('formModal').classList.add('active');
+        });
+
+        document.getElementById('formClose').addEventListener('click', () => {
+            document.getElementById('formModal').classList.remove('active');
+        });
+
+        document.getElementById('formCancelBtn').addEventListener('click', () => {
+            document.getElementById('formModal').classList.remove('active');
+        });
+
+        document.getElementById('formModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('formModal')) {
+                document.getElementById('formModal').classList.remove('active');
+            }
+        });
+
+        // COLOR PICKER SYNC
+        document.getElementById('planetColor').addEventListener('change', (e) => {
+            document.getElementById('colorHex').value = e.target.value;
+        });
+
+        // ADD PLANET FORM SUBMISSION
+        document.getElementById('addPlanetForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('planetName').value.trim();
+            const color = document.getElementById('planetColor').value;
+            const size = parseInt(document.getElementById('planetSize').value);
+            const distance = parseInt(document.getElementById('orbitDistance').value);
+            const speed = parseInt(document.getElementById('orbitSpeed').value);
+
+            const newPlanet = {
+                name,
+                size,
+                distance,
+                speed,
+                color,
+                fact: 'A custom planet born from your imagination.',
+                size_label: size * 100 + ' km',
+                distance_label: distance * 0.6 + ' million km',
+                isCustom: true
+            };
+
+            customPlanets.push(newPlanet);
+
+            const planetElement = createPlanetElement(newPlanet, true);
+            document.getElementById('solarSystem').appendChild(planetElement);
+
+            // RESET FORM
+            document.getElementById('addPlanetForm').reset();
+            document.getElementById('planetColor').value = '#a855f7';
+            document.getElementById('colorHex').value = '#a855f7';
+            document.getElementById('planetSize').value = '20';
+            document.getElementById('orbitDistance').value = '250';
+            document.getElementById('orbitSpeed').value = '30';
+
+            document.getElementById('formModal').classList.remove('active');
+        });
+
+        // INITIALIZE
+        function init() {
+            generateStarfield();
+
+            const solarSystem = document.getElementById('solarSystem');
+
+            // CREATE ORBIT AND PLANET ELEMENTS
+            planetsData.forEach((planet) => {
+                const planetElement = createPlanetElement(planet);
+                solarSystem.appendChild(planetElement);
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
