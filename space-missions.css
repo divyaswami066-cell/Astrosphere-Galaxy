@@ -1,0 +1,268 @@
+/* ==========================================================================
+   AstroSphere Space Missions CSS Stylesheet
+   ========================================================================== */
+
+/* --- Missions Page Base Setup --- */
+.missions-page {
+  background-color: var(--color-bg-space);
+  min-height: 100vh;
+  position: relative;
+}
+
+#space-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -10;
+  pointer-events: none;
+}
+
+/* --- Page Hero Section --- */
+.missions-hero {
+  padding-top: 140px;
+  padding-bottom: 40px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-text-align {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.missions-title {
+  font-size: 3.8rem;
+  line-height: 1.15;
+  background: linear-gradient(135deg, var(--color-white) 30%, var(--color-purple) 70%, var(--color-blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 16px;
+  animation: hero-fade-up 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+.missions-subtitle {
+  font-size: 1.3rem;
+  color: var(--color-text-secondary);
+  max-width: 500px;
+  margin: 0 auto;
+  animation: hero-fade-up 1s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+@keyframes hero-fade-up {
+  0% { opacity: 0; transform: translateY(25px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Dedicated Grid and Cards --- */
+.missions-grid-section {
+  position: relative;
+  z-index: 5;
+  padding-bottom: 80px;
+}
+
+.missions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px;
+}
+
+.mission-explore-card {
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  overflow: hidden;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease;
+}
+
+.mission-explore-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255,255,255,0.06), transparent 40%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Card Glow Colors on hover */
+.mission-explore-card[data-mission="apollo"] .card-glow { background: radial-gradient(circle at center, var(--color-purple), transparent 70%); }
+.mission-explore-card[data-mission="voyager"] .card-glow { background: radial-gradient(circle at center, var(--color-blue), transparent 70%); }
+.mission-explore-card[data-mission="perseverance"] .card-glow { background: radial-gradient(circle at center, var(--color-orange), transparent 70%); }
+
+.mission-explore-card:hover .card-glow {
+  opacity: 0.15;
+}
+
+.mission-explore-card .card-content {
+  position: relative;
+  z-index: 2;
+  transform: translateZ(30px);
+}
+
+/* Image placeholders with styled cosmic visual gradients */
+.mission-image-placeholder {
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.mission-emoji {
+  font-size: 4rem;
+  z-index: 2;
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+  transition: transform 0.4s ease;
+}
+
+.mission-explore-card:hover .mission-emoji {
+  transform: scale(1.18) rotate(6deg);
+}
+
+.apollo-bg {
+  background: linear-gradient(135deg, #1E1B4B 0%, #3B0764 100%);
+  border-bottom: 1px solid rgba(168, 85, 247, 0.15);
+}
+
+.voyager-bg {
+  background: linear-gradient(135deg, #022C22 0%, #0F172A 100%);
+  border-bottom: 1px solid rgba(34, 211, 238, 0.15);
+}
+
+.perseverance-bg {
+  background: linear-gradient(135deg, #451A03 0%, #1E1B4B 100%);
+  border-bottom: 1px solid rgba(251, 191, 36, 0.15);
+}
+
+.mission-badge {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(11, 16, 38, 0.7);
+  backdrop-filter: blur(6px);
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 0.75rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  border: 1px solid var(--glass-border);
+  color: var(--color-blue);
+  z-index: 5;
+}
+
+/* Card Info Details Layout */
+.mission-details {
+  padding: 28px;
+}
+
+.mission-category {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.mission-details h3 {
+  font-size: 1.6rem;
+  color: var(--color-white);
+  margin-bottom: 12px;
+}
+
+.mission-details p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+  min-height: 70px; /* Keep heights visually even */
+}
+
+/* Specific Specifications Box inside card */
+.mission-spec-box {
+  background: rgba(255,255,255,0.015);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.spec-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 0.85rem;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.spec-row:last-child {
+  border-bottom: none;
+}
+
+.spec-row span {
+  color: var(--color-text-secondary);
+}
+
+.spec-row strong {
+  color: var(--color-white);
+  font-weight: 500;
+}
+
+/* Custom Interactive Explore Mission Buttons */
+.btn-explore-mission {
+  width: 100%;
+  padding: 12px 20px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--color-white);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.mission-explore-card:hover {
+  border-color: rgba(255,255,255,0.2);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+}
+
+/* Specific hover accents */
+.mission-explore-card[data-mission="apollo"]:hover { border-color: rgba(168, 85, 247, 0.4); box-shadow: 0 15px 35px rgba(168, 85, 247, 0.15); }
+.mission-explore-card[data-mission="voyager"]:hover { border-color: rgba(34, 211, 238, 0.4); box-shadow: 0 15px 35px rgba(34, 211, 238, 0.15); }
+.mission-explore-card[data-mission="perseverance"]:hover { border-color: rgba(255, 159, 28, 0.4); box-shadow: 0 15px 35px rgba(255, 159, 28, 0.15); }
+
+.mission-explore-card:hover .btn-explore-mission {
+  background: var(--color-white);
+  color: var(--color-bg-space);
+  border-color: var(--color-white);
+  box-shadow: 0 0 15px rgba(255,255,255,0.4);
+}
+
+/* --- Tablet / Mobile Layout Overrides --- */
+@media (max-width: 768px) {
+  .missions-title {
+    font-size: 2.8rem;
+  }
+  .missions-subtitle {
+    font-size: 1.1rem;
+    padding: 0 16px;
+  }
+  .missions-grid {
+    grid-template-columns: 1fr;
+  }
+}

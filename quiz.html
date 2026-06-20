@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space Quiz — AstroSphere</title>
+  <meta name="description" content="Test your knowledge of planets, the solar system, and space missions in AstroSphere's cosmic quiz challenge.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="quiz.css">
+</head>
+<body class="quiz-page">
+
+  <!-- Starfield Canvas -->
+  <canvas id="space-canvas"></canvas>
+
+  <!-- Floating Glassmorphism Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">🪐</span>
+        <span class="logo-text">AstroSphere</span>
+      </a>
+      <div class="nav-menu-toggle" id="menu-toggle">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="nav-links-wrapper" id="nav-links-wrapper">
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="explorer.html" class="nav-link">Explore</a></li>
+          <li><a href="space-missions.html" class="nav-link">Space Missions</a></li>
+          <li><a href="quiz.html" class="nav-link active">Quiz</a></li>
+          <li><a href="index.html#why-us" class="nav-link">About</a></li>
+        </ul>
+        <a href="explorer.html" class="btn-cta btn-nav">
+          <span>🚀 Start Exploring</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Quiz Viewport -->
+  <main class="quiz-viewport">
+
+    <!-- ── START SCREEN ── -->
+    <div class="quiz-screen" id="screen-start">
+      <div class="quiz-card glassmorphism start-card">
+        <div class="start-icon">🏆</div>
+        <h1 class="start-title">Space Quiz Challenge</h1>
+        <p class="start-desc">Test your cosmic knowledge across <strong>10 questions</strong> covering planets, the solar system, and legendary space missions.</p>
+        <div class="start-meta">
+          <div class="meta-chip">🌍 10 Questions</div>
+          <div class="meta-chip">⏱ No Time Limit</div>
+          <div class="meta-chip">🏅 Earn Explorer Rank</div>
+        </div>
+        <button class="btn-quiz-start" id="btn-start">
+          <span>🚀 Launch Quiz</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── QUESTION SCREEN ── -->
+    <div class="quiz-screen hidden" id="screen-question">
+
+      <!-- Top HUD -->
+      <div class="quiz-hud">
+        <div class="hud-score">
+          <span class="hud-label">Score</span>
+          <span class="hud-value" id="hud-score">0</span>
+        </div>
+        <div class="hud-progress-wrap">
+          <div class="hud-progress-track">
+            <div class="hud-progress-fill" id="hud-progress-fill"></div>
+          </div>
+          <span class="hud-q-label" id="hud-q-label">Question 1 of 10</span>
+        </div>
+        <div class="hud-streak">
+          <span class="hud-label">Streak</span>
+          <span class="hud-value" id="hud-streak">🔥 0</span>
+        </div>
+      </div>
+
+      <!-- Question Card -->
+      <div class="quiz-card glassmorphism question-card" id="question-card">
+        <!-- Planet / topic badge -->
+        <div class="q-badge" id="q-badge">🌍 Earth</div>
+
+        <!-- Question text -->
+        <p class="q-text" id="q-text">Loading question…</p>
+
+        <!-- 4 Options -->
+        <div class="q-options" id="q-options">
+          <button class="q-opt" data-index="0"></button>
+          <button class="q-opt" data-index="1"></button>
+          <button class="q-opt" data-index="2"></button>
+          <button class="q-opt" data-index="3"></button>
+        </div>
+
+        <!-- Answer feedback -->
+        <div class="q-feedback hidden" id="q-feedback">
+          <span class="feedback-icon" id="feedback-icon">✅</span>
+          <span class="feedback-text" id="feedback-text">Correct!</span>
+          <span class="feedback-fact" id="feedback-fact"></span>
+        </div>
+
+        <!-- Next button -->
+        <button class="btn-next-q hidden" id="btn-next-q">
+          <span id="next-btn-label">Next Question ➡️</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── RESULTS SCREEN ── -->
+    <div class="quiz-screen hidden" id="screen-results">
+      <div class="quiz-card glassmorphism results-card">
+
+        <!-- Animated rank badge -->
+        <div class="results-rank-badge" id="results-rank-badge">🚀</div>
+        <h2 class="results-rank-title" id="results-rank-title">Galaxy Commander</h2>
+        <p class="results-rank-desc" id="results-rank-desc">Outstanding cosmic mastery!</p>
+
+        <!-- Score display -->
+        <div class="results-score-row">
+          <div class="score-circle" id="score-circle">
+            <span class="score-num" id="score-num">0</span>
+            <span class="score-denom">/10</span>
+          </div>
+        </div>
+
+        <!-- Stats breakdown -->
+        <div class="results-stats">
+          <div class="r-stat correct">
+            <span class="r-stat-icon">✅</span>
+            <span class="r-stat-label">Correct</span>
+            <span class="r-stat-val" id="r-correct">0</span>
+          </div>
+          <div class="r-stat wrong">
+            <span class="r-stat-icon">❌</span>
+            <span class="r-stat-label">Wrong</span>
+            <span class="r-stat-val" id="r-wrong">0</span>
+          </div>
+          <div class="r-stat streak">
+            <span class="r-stat-icon">🔥</span>
+            <span class="r-stat-label">Best Streak</span>
+            <span class="r-stat-val" id="r-streak">0</span>
+          </div>
+        </div>
+
+        <!-- CTA Buttons -->
+        <div class="results-actions">
+          <button class="btn-quiz-action btn-retry" id="btn-retry">
+            <span>🔁 Try Again</span>
+          </button>
+          <a href="explorer.html" class="btn-quiz-action btn-explore">
+            <span>🌌 Explore Solar System</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="quiz.js"></script>
+</body>
+</html>

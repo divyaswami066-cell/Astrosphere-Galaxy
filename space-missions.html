@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space Missions — AstroSphere</title>
+  <meta name="description" content="Explore humanity's greatest achievements beyond Earth. Journey through history with Apollo 11, Voyager 1, and the Perseverance Rover.">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="space-missions.css">
+</head>
+<body class="missions-page">
+
+  <!-- Dynamic Starfield Canvas Background -->
+  <canvas id="space-canvas"></canvas>
+
+  <!-- Floating Glassmorphism Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo" id="logo">
+        <span class="logo-icon">🪐</span>
+        <span class="logo-text">AstroSphere</span>
+      </a>
+      
+      <div class="nav-menu-toggle" id="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <div class="nav-links-wrapper" id="nav-links-wrapper">
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="explorer.html" class="nav-link">Explore</a></li>
+          <li><a href="#" class="nav-link active">Space Missions</a></li>
+          <li><a href="quiz.html" class="nav-link">Quiz</a></li>
+          <li><a href="index.html#why-us" class="nav-link">About</a></li>
+        </ul>
+        <a href="explorer.html" class="btn-cta btn-nav">
+          <span>🚀 Start Exploring</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Hero Section -->
+  <header class="missions-hero">
+    <div class="section-container">
+      <div class="hero-text-align">
+        <h1 class="missions-title">🚀 Space Missions</h1>
+        <p class="missions-subtitle">Explore humanity's greatest achievements beyond Earth.</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Dedicated Missions Cards Grid -->
+  <section class="missions-grid-section">
+    <div class="section-container">
+      <div class="missions-grid">
+        
+        <!-- Apollo 11 -->
+        <div class="mission-explore-card tilt-card" data-mission="apollo">
+          <div class="card-glow"></div>
+          <div class="card-content">
+            <div class="mission-img-placeholder apollo-bg">
+              <span class="mission-emoji">🚀</span>
+            </div>
+            <div class="mission-badge">Manned Flight</div>
+            <div class="mission-details">
+              <span class="mission-category">Manned Moon Mission</span>
+              <h3>Apollo 11</h3>
+              <p>The historical landmark mission that landed the first two humans on the Moon in July 1969. "One small step for man, one giant leap for mankind."</p>
+              
+              <div class="mission-spec-box">
+                <div class="spec-row"><span>Launch Date:</span><strong>July 16, 1969</strong></div>
+                <div class="spec-row"><span>Destination:</span><strong>The Moon</strong></div>
+                <div class="spec-row"><span>Agency:</span><strong>NASA</strong></div>
+              </div>
+
+              <button class="btn-explore-mission" onclick="alert('Launching Apollo 11 interactive logs... 🚀');">
+                <span>Explore Mission</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Voyager 1 -->
+        <div class="mission-explore-card tilt-card" data-mission="voyager">
+          <div class="card-glow"></div>
+          <div class="card-content">
+            <div class="mission-img-placeholder voyager-bg">
+              <span class="mission-emoji">🛰</span>
+            </div>
+            <div class="mission-badge">Deep Space</div>
+            <div class="mission-details">
+              <span class="mission-category">Deep Space Probe</span>
+              <h3>Voyager 1</h3>
+              <p>Launched in 1977, Voyager 1 is the farthest human-made object from Earth, traversing interstellar space and sending back alien data.</p>
+              
+              <div class="mission-spec-box">
+                <div class="spec-row"><span>Launch Date:</span><strong>Sept 5, 1977</strong></div>
+                <div class="spec-row"><span>Destination:</span><strong>Outer Solar System & Beyond</strong></div>
+                <div class="spec-row"><span>Agency:</span><strong>NASA / JPL</strong></div>
+              </div>
+
+              <button class="btn-explore-mission" onclick="alert('Intercepting Voyager 1 space signal... 🛰');">
+                <span>Explore Mission</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Perseverance Rover -->
+        <div class="mission-explore-card tilt-card" data-mission="perseverance">
+          <div class="card-glow"></div>
+          <div class="card-content">
+            <div class="mission-img-placeholder perseverance-bg">
+              <span class="mission-emoji">🤖</span>
+            </div>
+            <div class="mission-badge">Robotic Rover</div>
+            <div class="mission-details">
+              <span class="mission-category">Mars Exploration</span>
+              <h3>Perseverance Rover</h3>
+              <p>NASA's high-tech explorer searching for signs of ancient life on Mars, collecting rock core samples, and testing oxygen production.</p>
+              
+              <div class="mission-spec-box">
+                <div class="spec-row"><span>Launch Date:</span><strong>July 30, 2020</strong></div>
+                <div class="spec-row"><span>Destination:</span><strong>Jezero Crater, Mars</strong></div>
+                <div class="spec-row"><span>Agency:</span><strong>NASA</strong></div>
+              </div>
+
+              <button class="btn-explore-mission" onclick="alert('Accessing Perseverance Mars rover cameras... 🤖');">
+                <span>Explore Mission</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+  <footer class="footer">
+    <div class="footer-glow"></div>
+    <div class="section-container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <span class="logo-icon">🪐</span>
+            <span class="logo-text">AstroSphere</span>
+          </a>
+          <p class="footer-tagline">Interactive Solar System Explorer</p>
+          <p class="footer-desc">Sparking interest and wonder about the universe in students and future astronomers around the world.</p>
+        </div>
+
+        <div class="footer-links-group">
+          <h4>Cosmic Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="explorer.html">Explore Orbits</a></li>
+            <li><a href="explorer.html">Voice Narrator</a></li>
+            <li><a href="#">Missions</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-group">
+          <h4>Astronomy Resources</h4>
+          <ul>
+            <li><a href="https://solarsystem.nasa.gov/" target="_blank" rel="noopener">NASA Solar System</a></li>
+            <li><a href="https://www.esa.int/" target="_blank" rel="noopener">ESA Portal</a></li>
+            <li><a href="https://photojournal.jpl.nasa.gov/" target="_blank" rel="noopener">JPL Images</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-newsletter">
+          <h4>Launch Newsletter</h4>
+          <p>Get weekly updates about meteor showers, launches, and space facts.</p>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed to the stars! 🌌');">
+            <input type="email" placeholder="Your space email..." required>
+            <button type="submit" class="btn-cta">🚀</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="copyright-text">&copy; 2026 AstroSphere. Made for Curious Minds 🚀. All systems operational.</p>
+        <div class="footer-socials">
+          <a href="#" aria-label="Twitter">🕊️</a>
+          <a href="#" aria-label="YouTube">📺</a>
+          <a href="#" aria-label="GitHub">💻</a>
+          <a href="#" aria-label="Instagram">📸</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript -->
+  <script src="space-missions.js"></script>
+</body>
+</html>

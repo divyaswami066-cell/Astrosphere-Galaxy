@@ -1,0 +1,617 @@
+/* ==========================================================================
+   AstroSphere Explorer CSS Stylesheet
+   Designed for Full-Screen Interactive Space Exploration
+   ========================================================================== */
+
+/* --- Explorer Page Base Layout --- */
+.explorer-page {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--color-bg-space);
+  position: relative;
+}
+
+.explorer-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* --- Navigation & Instructions Header --- */
+.explorer-nav {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  right: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.btn-back-home {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 20px;
+  background: rgba(11, 16, 38, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  border-radius: 30px;
+  color: var(--color-white);
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: var(--transition-fast);
+  pointer-events: auto;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.btn-back-home:hover {
+  transform: translateX(-3px);
+  border-color: var(--color-blue);
+  box-shadow: var(--shadow-glow-blue);
+}
+
+.explorer-instructions {
+  background: rgba(168, 85, 247, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  padding: 8px 18px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-white);
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+  animation: instructions-glow 2s infinite alternate;
+}
+
+@keyframes instructions-glow {
+  0% { box-shadow: 0 0 10px rgba(168, 85, 247, 0.2); border-color: rgba(168, 85, 247, 0.3); }
+  100% { box-shadow: 0 0 20px rgba(34, 211, 238, 0.4); border-color: rgba(34, 211, 238, 0.5); }
+}
+
+/* --- Solar System Mechanics Area --- */
+.explorer-system {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 100vh;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  transition: transform 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform-style: preserve-3d;
+}
+
+/* System-level orbit rings (absolute lines) */
+.system-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1px dashed rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.8s ease;
+}
+
+.system-orbit.fade-out {
+  opacity: 0;
+}
+
+/* Custom Orbit Ring Diameters */
+#orbit-mercury { width: 180px; height: 180px; }
+#orbit-venus   { width: 280px; height: 280px; }
+#orbit-earth   { width: 380px; height: 380px; }
+#orbit-mars    { width: 480px; height: 480px; }
+#orbit-jupiter { width: 620px; height: 620px; }
+#orbit-saturn  { width: 780px; height: 780px; }
+#orbit-uranus  { width: 920px; height: 920px; }
+#orbit-neptune { width: 1060px; height: 1060px; }
+
+/* Sun visual */
+.system-sun {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 15;
+  cursor: pointer;
+  transition: transform 0.8s ease, opacity 0.8s ease;
+}
+
+.system-sun.fade-out {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.2);
+  pointer-events: none;
+}
+
+.sun-sphere {
+  font-size: 4rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 25px #F97316);
+  animation: sun-spin 20s linear infinite;
+}
+
+.sun-glow-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.4), transparent 70%);
+  filter: blur(10px);
+  animation: sun-glow-pulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes sun-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes sun-glow-pulse {
+  0% { width: 80px; height: 80px; opacity: 0.6; }
+  100% { width: 110px; height: 110px; opacity: 1; }
+}
+
+/* --- Planet Interactive Nodes --- */
+.explorer-planet {
+  position: absolute;
+  z-index: 20;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%); /* Anchor position around calculated center */
+  transform-style: preserve-3d;
+  /* Disable transition on coordinates during orbit calculation, but enable for scale and shadow */
+}
+
+/* Specific Sizes in Solar System View */
+#planet-mercury { --size: 14px; }
+#planet-venus   { --size: 22px; }
+#planet-earth   { --size: 26px; }
+#planet-mars    { --size: 18px; }
+#planet-jupiter { --size: 46px; }
+#planet-saturn  { --size: 40px; }
+#planet-uranus  { --size: 32px; }
+#planet-neptune { --size: 30px; }
+
+/* Planet visual mesh styling */
+.planet-mesh {
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  position: relative;
+  transition: transform 1.2s cubic-bezier(0.25, 0.8, 0.25, 1), 
+              width 1.2s cubic-bezier(0.25, 0.8, 0.25, 1), 
+              height 1.2s cubic-bezier(0.25, 0.8, 0.25, 1),
+              box-shadow 0.4s ease;
+  transform-style: preserve-3d;
+}
+
+.planet-mesh::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: inherit;
+  z-index: 1;
+}
+
+/* Shading mask overlay: gives a realistic 3D shadow that stays static */
+.planet-mesh::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 25% 25%, transparent 20%, rgba(0, 0, 0, 0.6) 60%, rgba(0, 0, 0, 0.95) 100%);
+  pointer-events: none;
+  z-index: 5;
+  transition: all 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Planet Labels */
+.planet-tag {
+  margin-top: 8px;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  background: rgba(11, 16, 38, 0.6);
+  border: 1px solid var(--glass-border);
+  padding: 3px 8px;
+  border-radius: 10px;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.explorer-planet:hover .planet-tag {
+  color: var(--color-white);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.explorer-planet:hover .planet-mesh {
+  box-shadow: 0 0 20px currentColor;
+}
+
+/* Planet specific meshes gradients */
+.mercury { background: radial-gradient(circle, #d4d4d8 0%, #71717a 100%); color: #a1a1aa; }
+.venus   { background: radial-gradient(circle, #fef08a 0%, #d97706 100%); color: #ca8a04; }
+.earth   { background: radial-gradient(circle, #93c5fd 0%, #1e4ed8 100%); color: #60a5fa; }
+.mars    { background: radial-gradient(circle, #fca5a5 0%, #b91c1c 100%); color: #f87171; }
+.jupiter { background: radial-gradient(circle, #fed7aa 0%, #ea580c 100%); color: #fdba74; }
+.saturn  { background: radial-gradient(circle, #fef9c3 0%, #b45309 100%); color: #fbbf24; }
+.uranus  { background: radial-gradient(circle, #ecfeff 0%, #0891b2 100%); color: #67e8f9; }
+.neptune { background: radial-gradient(circle, #dbeafe 0%, #1d4ed8 100%); color: #38bdf8; }
+
+/* Earth's Moon - Explorer specific scale */
+.explorer-planet .earth-moon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #e4e4e7;
+  margin-top: -2.5px;
+  margin-left: -2.5px;
+  box-shadow: 0 0 3px #ffffff;
+  animation: moon-orbit 4s linear infinite;
+  z-index: 10;
+  transition: opacity 0.5s ease;
+}
+
+/* Saturn Rings - Explorer specific scale */
+.saturn-rings {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 220%;
+  height: 45%;
+  border: 4px solid rgba(251, 191, 36, 0.45);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotateX(65deg) rotateY(10deg);
+  pointer-events: none;
+  z-index: 3;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+  transition: border-width 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* --- Locked Zoom State (Selected Planet) --- */
+.explorer-planet.zoomed {
+  z-index: 100;
+}
+
+.explorer-planet.zoomed .planet-mesh {
+  width: 200px;
+  height: 200px;
+  box-shadow: 0 0 45px currentColor;
+  /* Slow axial spin when zoomed */
+  animation: zoomed-spin 35s linear infinite;
+}
+
+/* Adjust ring borders and moon when zoomed */
+.explorer-planet.zoomed .saturn-rings {
+  border-width: 14px;
+}
+
+.explorer-planet.zoomed .earth-moon {
+  opacity: 0; /* Fade out moon when zoomed to prevent orbit clipping */
+}
+
+.explorer-planet.zoomed .planet-tag {
+  opacity: 0;
+  transform: scale(0.5) translateY(20px);
+}
+
+/* Faded class for non-selected planets */
+.explorer-planet.faded {
+  opacity: 0.05;
+  pointer-events: none;
+  filter: blur(2px);
+  transition: opacity 0.8s ease, filter 0.8s ease;
+}
+
+@keyframes zoomed-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* --- Glassmorphism Details Panel --- */
+.explorer-sidebar {
+  position: absolute;
+  top: 5vh;
+  right: -420px; /* Hidden start */
+  width: 380px;
+  height: 90vh;
+  z-index: 150;
+  padding: 40px 30px;
+  display: flex;
+  flex-direction: column;
+  transition: right 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow-y: auto;
+}
+
+.explorer-sidebar.open {
+  right: 30px;
+}
+
+.sidebar-glow {
+  position: absolute;
+  top: -10%;
+  right: -10%;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  filter: blur(35px);
+  opacity: 0.25;
+  transition: background 0.8s ease;
+}
+
+.sidebar-header {
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding-bottom: 20px;
+}
+
+.sidebar-header h2 {
+  font-size: 2.3rem;
+  color: var(--color-white);
+  margin-bottom: 4px;
+}
+
+.sidebar-tagline {
+  font-size: 1rem;
+  font-weight: 500;
+  transition: color 0.5s ease;
+}
+
+.sidebar-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.sidebar-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 16px;
+  padding: 14px 18px;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-stat-item:hover {
+  transform: translateX(4px);
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.08);
+}
+
+.stat-icon {
+  font-size: 1.6rem;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.sidebar-funfact-box {
+  background: rgba(168, 85, 247, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.15);
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 28px;
+  flex-grow: 1;
+}
+
+.sidebar-funfact-box h3 {
+  font-size: 1.05rem;
+  color: var(--color-blue);
+  margin-bottom: 8px;
+}
+
+.sidebar-funfact-box p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--color-text-primary);
+}
+
+.sidebar-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.btn-explorer-action {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: var(--transition-smooth);
+}
+
+.btn-replay {
+  background: linear-gradient(135deg, var(--color-blue) 0%, rgba(34, 211, 238, 0.7) 100%);
+  border: none;
+  color: var(--color-bg-space);
+  box-shadow: 0 4px 15px rgba(34, 211, 238, 0.2);
+}
+
+.btn-replay:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(34, 211, 238, 0.4);
+}
+
+.btn-next {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--color-white);
+}
+
+.btn-next:hover {
+  background: var(--color-white);
+  color: var(--color-bg-space);
+  border-color: var(--color-white);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255,255,255,0.25);
+}
+
+.btn-back {
+  background: linear-gradient(135deg, var(--color-purple) 0%, rgba(168, 85, 247, 0.7) 100%);
+  border: none;
+  color: var(--color-white);
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.2);
+}
+
+.btn-back:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+}
+
+/* --- Sci-Fi Speech Bubble --- */
+.explorer-speech-bubble {
+  position: absolute;
+  left: 35%; /* Centered around planet's column */
+  top: 10vh;
+  transform: translateX(-50%) translateY(20px);
+  max-width: 380px;
+  min-width: 280px;
+  padding: 24px;
+  border-radius: 20px;
+  z-index: 140;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), 
+              transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.explorer-speech-bubble.open {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.bubble-arrow {
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 24px;
+  height: 24px;
+  background: inherit;
+  border-right: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+  z-index: -1;
+}
+
+.speech-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 6px;
+}
+
+.speech-speaker-icon {
+  font-size: 1.3rem;
+  filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
+}
+
+#bubble-speaker-name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--color-blue);
+}
+
+.speech-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  min-height: 60px; /* Preserve space for typing text */
+}
+
+/* Typing cursor blink */
+.speech-text::after {
+  content: '|';
+  color: var(--color-blue);
+  animation: cursor-blink 0.8s step-end infinite;
+}
+
+.speech-text.typing-done::after {
+  content: '';
+}
+
+@keyframes cursor-blink {
+  from, to { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+/* --- Mobile Adaptive styling for explorer --- */
+@media (max-width: 1024px) {
+  .explorer-speech-bubble {
+    left: 50%;
+    top: 60vh;
+    max-width: 90%;
+    width: 90%;
+  }
+
+  .explorer-sidebar {
+    width: 90%;
+    height: 40vh;
+    top: auto;
+    bottom: -45vh;
+    right: 5% !important;
+    left: 5%;
+    transition: bottom 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  .explorer-sidebar.open {
+    bottom: 3vh;
+  }
+}

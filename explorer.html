@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solar System Explorer — AstroSphere</title>
+  <meta name="description" content="Immersive 3D interactive Solar System Explorer. Interactive maps, planet deep dives, voice narration, and fun facts.">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="explorer.css">
+</head>
+<body class="explorer-page">
+
+  <!-- Full-Screen Space Background Canvas -->
+  <canvas id="space-canvas"></canvas>
+
+  <!-- Interactive Space Map Area -->
+  <main class="explorer-viewport">
+    
+    <!-- Floating Back Home Nav -->
+    <div class="explorer-nav">
+      <a href="index.html" class="btn-back-home">
+        <span>🪐 Back to AstroSphere</span>
+      </a>
+      <div class="explorer-instructions" id="explorer-instructions">
+        👉 Click any planet to zoom in and hear its story!
+      </div>
+    </div>
+
+    <!-- Solar System Map -->
+    <div class="explorer-system" id="explorer-system">
+      
+      <!-- Concentric Orbit Ring Lines (Behind Planets) -->
+      <div class="system-orbit" id="orbit-mercury"></div>
+      <div class="system-orbit" id="orbit-venus"></div>
+      <div class="system-orbit" id="orbit-earth"></div>
+      <div class="system-orbit" id="orbit-mars"></div>
+      <div class="system-orbit" id="orbit-jupiter"></div>
+      <div class="system-orbit" id="orbit-saturn"></div>
+      <div class="system-orbit" id="orbit-uranus"></div>
+      <div class="system-orbit" id="orbit-neptune"></div>
+
+      <!-- Sun at Center -->
+      <div class="system-sun" id="system-sun">
+        <div class="sun-glow-ring"></div>
+        <div class="sun-sphere">☀️</div>
+      </div>
+
+      <!-- Planet Interactive Nodes -->
+      <div class="explorer-planet" id="planet-mercury" data-planet="mercury">
+        <div class="planet-mesh mercury"></div>
+        <span class="planet-tag">Mercury</span>
+      </div>
+
+      <div class="explorer-planet" id="planet-venus" data-planet="venus">
+        <div class="planet-mesh venus"></div>
+        <span class="planet-tag">Venus</span>
+      </div>
+
+      <div class="explorer-planet" id="planet-earth" data-planet="earth">
+        <div class="planet-mesh earth">
+          <div class="earth-moon"></div>
+        </div>
+        <span class="planet-tag">Earth</span>
+      </div>
+
+      <div class="explorer-planet" id="planet-mars" data-planet="mars">
+        <div class="planet-mesh mars"></div>
+        <span class="planet-tag">Mars</span>
+      </div>
+
+      <div class="explorer-planet" id="planet-jupiter" data-planet="jupiter">
+        <div class="planet-mesh jupiter"></div>
+        <span class="planet-tag">Jupiter</span>
+      </div>
+
+      <div class="explorer-planet" id="planet-saturn" data-planet="saturn">
+        <div class="planet-mesh saturn">
+          <div class="saturn-rings"></div>
+        </div>
+        <span class="planet-tag">Saturn</span>
+      </div>
+
+      <div class="explorer-planet" id="planet-uranus" data-planet="uranus">
+        <div class="planet-mesh uranus"></div>
+        <span class="planet-tag">Uranus</span>
+      </div>
+
+      <div class="explorer-planet" id="planet-neptune" data-planet="neptune">
+        <div class="planet-mesh neptune"></div>
+        <span class="planet-tag">Neptune</span>
+      </div>
+
+    </div>
+
+    <!-- Speech Bubble (Appears next to zoomed planet) -->
+    <div class="explorer-speech-bubble glassmorphism" id="explorer-speech-bubble">
+      <div class="bubble-arrow"></div>
+      <div class="speech-header">
+        <span class="speech-speaker-icon" id="bubble-speaker-emoji">🌍</span>
+        <strong id="bubble-speaker-name">Earth</strong>
+      </div>
+      <p class="speech-text" id="bubble-text">
+        <!-- Spoken text typed letter-by-letter here -->
+      </p>
+    </div>
+
+    <!-- Sliding Info Sidebar (Slides from right) -->
+    <aside class="explorer-sidebar glassmorphism" id="explorer-sidebar">
+      <div class="sidebar-glow" id="sidebar-glow-color"></div>
+
+      <div class="sidebar-header">
+        <h2 id="sidebar-title">Earth</h2>
+        <span class="sidebar-tagline" id="sidebar-tagline">Our Beautiful Blue Home</span>
+      </div>
+
+      <div class="sidebar-stats">
+        <div class="sidebar-stat-item">
+          <span class="stat-icon">🏷️</span>
+          <div class="stat-content">
+            <span class="stat-label">Planet Type</span>
+            <span class="stat-value" id="stat-type">Terrestrial</span>
+          </div>
+        </div>
+
+        <div class="sidebar-stat-item">
+          <span class="stat-icon">📏</span>
+          <div class="stat-content">
+            <span class="stat-label">Diameter</span>
+            <span class="stat-value" id="stat-diameter">12,742 km</span>
+          </div>
+        </div>
+
+        <div class="sidebar-stat-item">
+          <span class="stat-icon">☀️</span>
+          <div class="stat-content">
+            <span class="stat-label">Distance from Sun</span>
+            <span class="stat-value" id="stat-distance">149.6 Million km</span>
+          </div>
+        </div>
+
+        <div class="sidebar-stat-item">
+          <span class="stat-icon">🌙</span>
+          <div class="stat-content">
+            <span class="stat-label">Moons</span>
+            <span class="stat-value" id="stat-moons">1 Moon</span>
+          </div>
+        </div>
+
+        <div class="sidebar-stat-item">
+          <span class="stat-icon">🌡️</span>
+          <div class="stat-content">
+            <span class="stat-label">Average Temp</span>
+            <span class="stat-value" id="stat-temp">15°C</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-funfact-box">
+        <h3>💡 Did You Know?</h3>
+        <p id="stat-funfact">The only known planet that supports life.</p>
+      </div>
+
+      <div class="sidebar-actions">
+        <button class="btn-explorer-action btn-replay" id="btn-replay" title="Replay voice story">
+          <span>🔊 Replay Story</span>
+        </button>
+        <button class="btn-explorer-action btn-next" id="btn-next" title="Zoom to next planet">
+          <span>➡️ Next Planet</span>
+        </button>
+        <button class="btn-explorer-action btn-back" id="btn-back" title="Go back to Solar System map">
+          <span>🪐 Return Orbit</span>
+        </button>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- Explorer JavaScript -->
+  <script src="explorer.js"></script>
+</body>
+</html>

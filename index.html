@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AstroSphere — Interactive Solar System Explorer</title>
+  <meta name="description" content="Embark on a cosmic journey across the solar system. Explore planets, listen to their stories, and test your knowledge with interactive quizzes.">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <!-- Dynamic Starfield Canvas Background -->
+  <canvas id="space-canvas"></canvas>
+
+  <!-- Floating Glassmorphism Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-logo" id="logo">
+        <span class="logo-icon">🪐</span>
+        <span class="logo-text">AstroSphere</span>
+      </a>
+      
+      <div class="nav-menu-toggle" id="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <div class="nav-links-wrapper" id="nav-links-wrapper">
+        <ul class="nav-links">
+          <li><a href="#" class="nav-link active">Home</a></li>
+          <li><a href="explorer.html" class="nav-link">Explore</a></li>
+          <li><a href="space-missions.html" class="nav-link">Space Missions</a></li>
+          <li><a href="quiz.html" class="nav-link">Quiz</a></li>
+          <li><a href="#why-us" class="nav-link">About</a></li>
+        </ul>
+        <a href="explorer.html" class="btn-cta btn-nav">
+          <span>🚀 Start Exploring</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero-section">
+    <div class="hero-container">
+      <!-- Left side: Hero Text -->
+      <div class="hero-content">
+        <h1 class="hero-title" id="hero-title">
+          <!-- Text generated dynamically letter-by-letter in JS for premium animation -->
+        </h1>
+        <p class="hero-subtitle">
+          Travel across planets, discover fascinating facts, and hear planets tell their own stories through interactive learning.
+        </p>
+        <div class="hero-actions">
+          <a href="explorer.html" class="btn-cta btn-large glow-btn">
+            <span>🌌 Start Exploring</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Right side: Solar System Orbit Model -->
+      <div class="hero-orbit-container">
+        <div class="solar-system-orbit">
+          <!-- Sun -->
+          <div class="orbit-sun">
+            <div class="sun-core"></div>
+            <div class="sun-flare"></div>
+          </div>
+          
+          <!-- Orbit Rings and Planets -->
+          <div class="orbit-line mercury-orbit">
+            <div class="orbit-planet" data-name="Mercury">
+              <div class="planet-body mercury"></div>
+            </div>
+          </div>
+          <div class="orbit-line venus-orbit">
+            <div class="orbit-planet" data-name="Venus">
+              <div class="planet-body venus"></div>
+            </div>
+          </div>
+          <div class="orbit-line earth-orbit">
+            <div class="orbit-planet" data-name="Earth">
+              <div class="planet-body earth">
+                <div class="orbit-moon"></div>
+              </div>
+            </div>
+          </div>
+          <div class="orbit-line mars-orbit">
+            <div class="orbit-planet" data-name="Mars">
+              <div class="planet-body mars"></div>
+            </div>
+          </div>
+          <div class="orbit-line jupiter-orbit">
+            <div class="orbit-planet" data-name="Jupiter">
+              <div class="planet-body jupiter"></div>
+            </div>
+          </div>
+          <div class="orbit-line saturn-orbit">
+            <div class="orbit-planet" data-name="Saturn">
+              <div class="planet-body saturn">
+                <div class="saturn-rings-visual"></div>
+              </div>
+            </div>
+          </div>
+          <div class="orbit-line uranus-orbit">
+            <div class="orbit-planet" data-name="Uranus">
+              <div class="planet-body uranus"></div>
+            </div>
+          </div>
+          <div class="orbit-line neptune-orbit">
+            <div class="orbit-planet" data-name="Neptune">
+              <div class="planet-body neptune"></div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Live Planet Tooltip -->
+        <div class="orbit-tooltip" id="orbit-tooltip">
+          <h4 id="tooltip-name">Earth</h4>
+          <p id="tooltip-text">Hover over a planet to explore its orbit</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Choose Your Adventure Section -->
+  <section class="adventure-section" id="adventure">
+    <div class="section-container">
+      <div class="section-header">
+        <h2 class="section-title">Choose Your Cosmic Adventure</h2>
+        <p class="section-subtitle">Pick a destination and launch into an educational space mission</p>
+      </div>
+
+      <div class="adventure-grid">
+        <!-- Earth Card -->
+        <div class="adventure-card tilt-card" data-planet="earth">
+          <div class="card-glow"></div>
+          <div class="card-content">
+            <div class="card-icon">🌍</div>
+            <h3>Earth Explorer</h3>
+            <p>Discover our home planet and learn what makes Earth unique.</p>
+            <button class="btn-card-launch">Launch 🚀</button>
+          </div>
+        </div>
+
+        <!-- Mars Card -->
+        <div class="adventure-card tilt-card" data-planet="mars">
+          <div class="card-glow"></div>
+          <div class="card-content">
+            <div class="card-icon">🔴</div>
+            <h3>Mars Mission</h3>
+            <p>Explore the mysteries of the Red Planet and search for water signs.</p>
+            <button class="btn-card-launch">Launch 🚀</button>
+          </div>
+        </div>
+
+        <!-- Saturn Card -->
+        <div class="adventure-card tilt-card" data-planet="saturn">
+          <div class="card-glow"></div>
+          <div class="card-content">
+            <div class="card-icon">🪐</div>
+            <h3>Saturn Rings Adventure</h3>
+            <p>Travel through Saturn's magnificent ice and dust ring system.</p>
+            <button class="btn-card-launch">Launch 🚀</button>
+          </div>
+        </div>
+
+        <!-- Jupiter Card -->
+        <div class="adventure-card tilt-card" data-planet="jupiter">
+          <div class="card-glow"></div>
+          <div class="card-content">
+            <div class="card-icon">⚡</div>
+            <h3>Jupiter Giant Challenge</h3>
+            <p>Meet the largest gas giant planet and brave the great red storm.</p>
+            <button class="btn-card-launch">Launch 🚀</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Solar System Preview & Deep Dive -->
+  <section class="preview-section" id="preview">
+    <div class="section-container">
+      <div class="section-header">
+        <h2 class="section-title">Interactive Solar System</h2>
+        <p class="section-subtitle">Select any planet to activate Voice Narration and learn cosmic secrets</p>
+      </div>
+
+      <div class="preview-layout">
+        <!-- Planet Radial Selector Map -->
+        <div class="preview-orbit-map">
+          <div class="preview-sun">☀️</div>
+          
+          <div class="preview-orbit-ring" style="--d: 130px; --speed: 8s" data-planet="mercury">
+            <div class="preview-dot mercury-dot" title="Mercury">
+              <span class="preview-label">Mercury</span>
+            </div>
+          </div>
+          <div class="preview-orbit-ring" style="--d: 180px; --speed: 12s" data-planet="venus">
+            <div class="preview-dot venus-dot" title="Venus">
+              <span class="preview-label">Venus</span>
+            </div>
+          </div>
+          <div class="preview-orbit-ring" style="--d: 230px; --speed: 15s" data-planet="earth">
+            <div class="preview-dot earth-dot active" title="Earth">
+              <span class="preview-label">Earth</span>
+            </div>
+          </div>
+          <div class="preview-orbit-ring" style="--d: 280px; --speed: 18s" data-planet="mars">
+            <div class="preview-dot mars-dot" title="Mars">
+              <span class="preview-label">Mars</span>
+            </div>
+          </div>
+          <div class="preview-orbit-ring" style="--d: 340px; --speed: 25s" data-planet="jupiter">
+            <div class="preview-dot jupiter-dot" title="Jupiter">
+              <span class="preview-label">Jupiter</span>
+            </div>
+          </div>
+          <div class="preview-orbit-ring" style="--d: 400px; --speed: 30s" data-planet="saturn">
+            <div class="preview-dot saturn-dot" title="Saturn">
+              <span class="preview-label">Saturn</span>
+            </div>
+          </div>
+          <div class="preview-orbit-ring" style="--d: 460px; --speed: 36s" data-planet="uranus">
+            <div class="preview-dot uranus-dot" title="Uranus">
+              <span class="preview-label">Uranus</span>
+            </div>
+          </div>
+          <div class="preview-orbit-ring" style="--d: 520px; --speed: 42s" data-planet="neptune">
+            <div class="preview-dot neptune-dot" title="Neptune">
+              <span class="preview-label">Neptune</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Fact Card & Detail Panel -->
+        <div class="preview-detail-panel glassmorphism" id="planet-detail-panel">
+          <div class="detail-glow" id="panel-glow-color"></div>
+          
+          <div class="detail-header">
+            <div class="planet-avatar-wrapper">
+              <div class="planet-avatar" id="detail-planet-avatar">
+                <!-- Sphere shaded dynamically with CSS -->
+              </div>
+            </div>
+            <div class="detail-titles">
+              <h3 id="detail-planet-name">Earth</h3>
+              <span class="planet-tagline" id="detail-planet-tagline">Our Beautiful Blue Home</span>
+            </div>
+          </div>
+
+          <div class="detail-stats">
+            <div class="stat-box">
+              <span class="stat-label">Distance from Sun</span>
+              <span class="stat-val" id="detail-stat-distance">149.6 Million km</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Year Length</span>
+              <span class="stat-val" id="detail-stat-year">365 Days</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Moons</span>
+              <span class="stat-val" id="detail-stat-moons">1 Moon</span>
+            </div>
+          </div>
+
+          <div class="detail-body">
+            <p id="detail-planet-desc">Earth is the third planet from the Sun and the only astronomical object known to harbor life. About 29.2% of Earth's surface is land, while the remaining 70.8% is covered with water.</p>
+            
+            <div class="fact-bubble">
+              <span class="bubble-icon">💡</span>
+              <span class="bubble-text" id="detail-planet-funfact">The only known planet that supports life.</span>
+            </div>
+          </div>
+
+          <div class="detail-actions">
+            <button class="btn-voice-narration" id="btn-voice">
+              <span class="btn-voice-icon">🎙️</span>
+              <span id="voice-btn-text">Planet Voice Narration</span>
+            </button>
+            <div class="voice-wave" id="voice-wave-container">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fun Facts Carousel Section -->
+  <section class="facts-section" id="facts">
+    <div class="section-container">
+      <div class="section-header">
+        <h2 class="section-title">💡 Did You Know?</h2>
+        <p class="section-subtitle">Mind-blowing facts about the mysteries of outer space</p>
+      </div>
+
+      <div class="carousel-container glassmorphism">
+        <div class="carousel-track-wrapper">
+          <div class="carousel-track" id="carousel-track">
+            <!-- Fact Slide 1 -->
+            <div class="carousel-slide active">
+              <div class="fact-card">
+                <div class="fact-card-icon">🪐</div>
+                <p class="fact-card-text">A day on Venus is longer than a year on Venus. It takes Venus longer to rotate once on its axis than to complete one orbit around the Sun!</p>
+                <span class="fact-card-planet">- Venus Fact</span>
+              </div>
+            </div>
+            <!-- Fact Slide 2 -->
+            <div class="carousel-slide">
+              <div class="fact-card">
+                <div class="fact-card-icon">⚡</div>
+                <p class="fact-card-text">Jupiter is a massive cosmic vacuum cleaner. It is so big that it could fit over 1,300 Earths inside it, and its gravity attracts passing asteroids.</p>
+                <span class="fact-card-planet">- Jupiter Fact</span>
+              </div>
+            </div>
+            <!-- Fact Slide 3 -->
+            <div class="carousel-slide">
+              <div class="fact-card">
+                <div class="fact-card-icon">🌀</div>
+                <p class="fact-card-text">Neptune has the strongest winds in the solar system, reaching speeds of up to 2,100 kilometers per hour—faster than the speed of sound!</p>
+                <span class="fact-card-planet">- Neptune Fact</span>
+              </div>
+            </div>
+            <!-- Fact Slide 4 -->
+            <div class="carousel-slide">
+              <div class="fact-card">
+                <div class="fact-card-icon">☄️</div>
+                <p class="fact-card-text">There are millions of asteroids orbiting the Sun. If you clumped all of them in the main belt together, they would still be smaller than our Moon.</p>
+                <span class="fact-card-planet">- Asteroid Fact</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carousel Navigation Controls -->
+        <div class="carousel-controls">
+          <button class="carousel-btn prev-btn" id="carousel-prev">←</button>
+          <div class="carousel-indicators" id="carousel-indicators">
+            <span class="indicator active" data-slide="0"></span>
+            <span class="indicator" data-slide="1"></span>
+            <span class="indicator" data-slide="2"></span>
+            <span class="indicator" data-slide="3"></span>
+          </div>
+          <button class="carousel-btn next-btn" id="carousel-next">→</button>
+        </div>
+
+        <!-- Progress bar for automatic sliding -->
+        <div class="carousel-progress-bar">
+          <div class="carousel-progress-fill" id="carousel-progress-fill"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why AstroSphere Section -->
+  <section class="why-section" id="why-us">
+    <div class="section-container">
+      <div class="section-header">
+        <h2 class="section-title">Why AstroSphere?</h2>
+        <p class="section-subtitle">An immersive, game-like learning platform designed for future astronauts</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card scroll-reveal">
+          <div class="feature-icon-wrapper voice-glow">
+            <span class="feature-icon">🎙️</span>
+          </div>
+          <h3>Planet Voice Narration</h3>
+          <p>Hear the planets describe their own atmospheres, temperatures, and discoveries through premium voice synths.</p>
+        </div>
+
+        <div class="feature-card scroll-reveal">
+          <div class="feature-icon-wrapper explore-glow">
+            <span class="feature-icon">🌌</span>
+          </div>
+          <h3>Interactive Exploration</h3>
+          <p>Explore responsive models of orbits and planetary structures, crafted to display perfectly on all screens.</p>
+        </div>
+
+        <div class="feature-card scroll-reveal">
+          <div class="feature-icon-wrapper play-glow">
+            <span class="feature-icon">🧠</span>
+          </div>
+          <h3>Learn Through Play</h3>
+          <p>Complex scientific concepts are transformed into engaging, gamified summaries tailored for young explorers.</p>
+        </div>
+
+        <div class="feature-card scroll-reveal" style="cursor:pointer;" onclick="window.location.href='quiz.html'">
+          <div class="feature-icon-wrapper quiz-glow">
+            <span class="feature-icon">🏆</span>
+          </div>
+          <h3>Space Quiz Challenges</h3>
+          <p>Test your cosmic knowledge and unlock explorer achievements by answering astronomy quests.</p>
+          <a href="quiz.html" class="btn-cta" style="margin-top:16px;padding:10px 22px;font-size:0.85rem;"><span>🚀 Take the Quiz</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- Footer Section -->
+  <footer class="footer">
+    <div class="footer-glow"></div>
+    <div class="section-container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="#" class="nav-logo">
+            <span class="logo-icon">🪐</span>
+            <span class="logo-text">AstroSphere</span>
+          </a>
+          <p class="footer-tagline">Interactive Solar System Explorer</p>
+          <p class="footer-desc">Sparking interest and wonder about the universe in students and future astronomers around the world.</p>
+        </div>
+
+        <div class="footer-links-group">
+          <h4>Cosmic Links</h4>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="explorer.html">Explore Orbits</a></li>
+            <li><a href="explorer.html">Voice Narrator</a></li>
+            <li><a href="space-missions.html">Missions</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-group">
+          <h4>Astronomy Resources</h4>
+          <ul>
+            <li><a href="https://solarsystem.nasa.gov/" target="_blank" rel="noopener">NASA Solar System</a></li>
+            <li><a href="https://www.esa.int/" target="_blank" rel="noopener">ESA Portal</a></li>
+            <li><a href="https://photojournal.jpl.nasa.gov/" target="_blank" rel="noopener">JPL Images</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-newsletter">
+          <h4>Launch Newsletter</h4>
+          <p>Get weekly updates about meteor showers, launches, and space facts.</p>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed to the stars! 🌌');">
+            <input type="email" placeholder="Your space email..." required>
+            <button type="submit" class="btn-cta">🚀</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="copyright-text">&copy; 2026 AstroSphere. Made for Curious Minds 🚀. All systems operational.</p>
+        <div class="footer-socials">
+          <a href="#" aria-label="Twitter">🕊️</a>
+          <a href="#" aria-label="YouTube">📺</a>
+          <a href="#" aria-label="GitHub">💻</a>
+          <a href="#" aria-label="Instagram">📸</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript -->
+  <script src="index.js"></script>
+</body>
+</html>
